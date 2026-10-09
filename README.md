@@ -1,0 +1,180 @@
+<img width="1487" height="1025" alt="Screenshot 2026-10-09 135325" src="https://github.com/user-attachments/assets/4e70815b-9ee2-4993-ad2d-092121ff82b0" /># Web-tables
+## Website:
+https://assertqa.com/practice/webtables
+## Test Cases:
+
+
+## Task
+
+## Expected result
+
+## TC01
+
+Print all column headings
+
+All headings displayed
+
+## TC02
+
+Print the first data row
+
+First employee record displayed
+
+## TC03
+
+Print the last data row
+
+Last employee record displayed
+
+## TC04
+
+Search for an employee by last name
+
+Matching record displayed
+
+## TC05
+
+Extract all email addresses
+
+Every email printed
+
+## TC06
+
+Find the employee with the highest Due amount
+
+Matching employee identified
+
+## TC07
+
+Verify that a particular website link exists
+
+Pass or fail reported
+
+## TC08
+
+Count data rows without counting the header
+
+ 
+## Code:
+```
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+import re
+
+driver = webdriver.Chrome()
+driver.get("https://assertqa.com/practice/webtables")
+time.sleep(3)
+
+# Find the web table
+table = driver.find_element(By.TAG_NAME, "table")
+headers = table.find_elements(By.XPATH, ".//thead//th")
+rows = table.find_elements(By.XPATH, ".//tbody/tr")
+```
+## TC01:
+```
+print("\nTC01: All Column Headings")
+for header in headers:
+    print(header.text)
+```
+## TC02:
+```
+print("\nTC02: First Data Row")
+if rows:
+    print(rows[0].text)
+else:
+    print("No data rows found")
+```
+## TC03:
+```
+print("\nTC03: Last Data Row")
+if rows:
+    print(rows[-1].text)
+else:
+    print("No data rows found")
+```
+## TC04:
+```
+print("\nTC04: Search Employee by Last Name")
+last_name = input("Enter last name to search: ")
+found = False
+
+for row in rows:
+    cells = row.find_elements(By.TAG_NAME, "td")
+    if any(cell.text.strip().lower() == last_name.strip().lower()
+           for cell in cells):
+        print("Matching Record:", row.text)
+        found = True
+
+if not found:
+    print("Employee not found")
+```
+## TC05:
+```
+print("\nTC05: All Email Addresses")
+email_index = next(
+    (i for i, h in enumerate(headers)
+     if "email" in h.text.lower()), -1
+)
+
+if email_index == -1:
+    print("Email column not found")
+else:
+    for row in rows:
+        cells = row.find_elements(By.TAG_NAME, "td")
+        if len(cells) > email_index:
+            print(cells[email_index].text)
+```
+## TC06:
+```
+print("\nTC06: Employee with Highest Due")
+due_index = next(
+    (i for i, h in enumerate(headers)
+     if "due" in h.text.lower()), -1
+)
+
+employees = []
+
+if due_index == -1:
+    print("Due column not found")
+else:
+    for row in rows:
+        cells = row.find_elements(By.TAG_NAME, "td")
+        if len(cells) > due_index:
+            amounts = re.findall(
+                r"-?\d+(?:\.\d+)?",
+                cells[due_index].text.replace(",", "")
+            )
+            if amounts:
+                employees.append((float(amounts[0]), row.text))
+
+    if employees:
+        highest = max(employees, key=lambda x: x[0])
+        print("Highest Due Amount:", highest[0])
+        print("Employee Record:", highest[1])
+    else:
+        print("No valid Due amounts found")
+```
+## TC07:
+```
+print("\nTC07: Verify Website Link")
+links = table.find_elements(By.XPATH, ".//a[@href]")
+
+if links:
+    print("PASS: Website link exists")
+    for link in links:
+        print("Link:", link.get_attribute("href"))
+else:
+    print("FAIL: Website link not found")
+```
+## TC08:
+```
+print("\nTC08: Count Data Rows")
+print("Total Data Rows:", len(rows))
+
+time.sleep(10)
+driver.quit()
+```
+## Output:
+<img width="1487" height="1025" alt="Screenshot 2026-10-09 135325" src="https://github.com/user-attachments/assets/9220cc1d-c765-4512-9655-2e1565828637" />
+
