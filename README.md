@@ -1,4 +1,4 @@
-<img width="1487" height="1025" alt="Screenshot 2026-10-09 135325" src="https://github.com/user-attachments/assets/4e70815b-9ee2-4993-ad2d-092121ff82b0" /># Web-tables
+## Web tables
 ## Website:
 https://assertqa.com/practice/webtables
 ## Test Cases:
